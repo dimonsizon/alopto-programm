@@ -7,8 +7,10 @@ angular.module('app', [
   'app.home',
   'app.newProducts',
   'app.saleProducts'
-]).config(['$routeProvider',
-    function ($routeProvider) {
+]).config(['$routeProvider', '$httpProvider',
+    function ($routeProvider, $httpProvider) {
+        //$httpProvider.defaults.withCredentials = true;
+
         $routeProvider.
             when('/home', {
                 templateUrl: '/app/home/home.html',
