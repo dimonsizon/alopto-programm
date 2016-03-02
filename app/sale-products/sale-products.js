@@ -9,10 +9,19 @@ angular.module('app.saleProducts', ['ngRoute'])
         $http.get('https://script.google.com/macros/s/AKfycbx5xfsnqZ8ICQHQylIKKo1eABSvrVYIVMvZumVhGfvcJ02nfaus/exec').
             success(function (data, status) {
                 $scope.modelList = data.list.reverse();
+                for (var i = 0; i < $scope.modelList.length; i++) {
+                    $scope.modelList[i].saleCount = 0;
+                }
             }).finally(function () {
             });
 
         $scope.updateList = function () {
+            for (var i = 0; i < $scope.modelList.length; i++) {
+                if ($scope.modelList[i].rowType != 'title' && $scope.modelList[i].rowType != 'sub-title') {
+                    $scope.modelList[i].count = $scope.modelList[i].count - $scope.modelList[i].saleCount;
+                    $scope.modelList[i].saleCount = 0;
+                }
+            }
             $.ajax({
                 url: 'https://script.google.com/macros/s/AKfycbx5xfsnqZ8ICQHQylIKKo1eABSvrVYIVMvZumVhGfvcJ02nfaus/exec',
                 data: JSON.stringify($scope.modelList),
@@ -20,9 +29,10 @@ angular.module('app.saleProducts', ['ngRoute'])
                 type: "POST",
                 crossDomain: true,
                 success: function (data) {
-                    $scope.new.model = '';
-                    $scope.new.type = '';
-                    $scope.new.count = '';
+                    alert('Операция выполнена успешно');
+                },
+                error: function (data) {
+                    alert('Ошибка! Изменения не сохранены! =(');
                 }
             });
         }
