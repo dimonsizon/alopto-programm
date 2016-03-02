@@ -26,9 +26,11 @@ angular.module('app', [
                 redirectTo: '/home'
             });
         }])
-        .run(['$rootScope',
-            function ($rootScope) {
-
+        .run(['$rootScope', '$location',
+            function ($rootScope, $location) {
+                $rootScope.setActive = function (localPath) {
+                    return $location.path() === localPath;
+                }
             }
         ]);
 

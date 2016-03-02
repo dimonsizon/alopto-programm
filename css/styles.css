@@ -3,7 +3,7 @@
 }
 
 .model-list {
-
+    font-size: 12px;
 }
     .model-list .row-item{
         line-height: 30px;
@@ -36,12 +36,12 @@
                 }
 
         .model-list .form-group {
-            margin: 5px 0;
+            margin: 3px 0;
         }
 
             .model-list .form-control {
-                height: 30px;
-                padding: 4px 12px;
+                height: 26px;
+                padding: 2px 12px;
             }
 
                 .model-list .form-control .count {

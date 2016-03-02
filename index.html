@@ -14,10 +14,10 @@
         <header>
             <nav class="container">
                 <ul class="nav nav-pills">
-                    <li class="active"><a href="#/home">Главная</a></li>
-                    <li><a href="#/sale-products">Продажа</a></li>
-                    <li><a href="#/new-products">Поступление</a></li>
-                    <li><a href="#">Другое</a></li>
+                    <li ng-class="setActive('/home') ? 'active' : ''"><a href="#/home">Главная</a></li>
+                    <li ng-class="setActive('/sale-products') ? 'active' : ''"><a href="#/sale-products">Продажа</a></li>
+                    <li ng-class="setActive('/new-products') ? 'active' : ''"><a href="#/new-products">Поступление</a></li>
+                    <li ng-class="setActive('/home') ? 'active' : ''"><a href="#">Другое</a></li>
                 </ul>
             </nav>
         </header>
