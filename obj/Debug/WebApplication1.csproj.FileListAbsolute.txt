@@ -1,0 +1,6 @@
+D:\3D бизнесс\!Заготовки\!Программа подсчета\obj\Debug\WebApplication1.csprojResolveAssemblyReference.cache
+D:\3D бизнесс\!Заготовки\!Программа подсчета\bin\WebApplication1.dll.config
+D:\3D бизнесс\!Заготовки\!Программа подсчета\bin\WebApplication1.dll
+D:\3D бизнесс\!Заготовки\!Программа подсчета\bin\WebApplication1.pdb
+D:\3D бизнесс\!Заготовки\!Программа подсчета\obj\Debug\WebApplication1.dll
+D:\3D бизнесс\!Заготовки\!Программа подсчета\obj\Debug\WebApplication1.pdb
