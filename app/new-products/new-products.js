@@ -19,6 +19,7 @@ angular.module('app.newProducts', ['ngRoute'])
             });
 
         $scope.updateList = function () {                        
+            $scope.updateLoading = true;
 
             for (var i = 0; i < $scope.modelList.length; i++) {
                 if ($scope.modelList[i].rowType != 'title' && $scope.modelList[i].rowType != 'sub-title') {
@@ -27,31 +28,18 @@ angular.module('app.newProducts', ['ngRoute'])
                 }                
             }
 
-            //$http.post('https://script.google.com/macros/s/AKfycbx5xfsnqZ8ICQHQylIKKo1eABSvrVYIVMvZumVhGfvcJ02nfaus/exec', JSON.stringify($scope.modelList)).
-            //    success(function (data, status) {
-            //        $scope.updateLoading = false;
-             //   }).error(function () {
-            //   });
-
-            //$scope.updateLoading = true;
-            $.ajax({
-                url: 'https://script.google.com/macros/s/AKfycbx5xfsnqZ8ICQHQylIKKo1eABSvrVYIVMvZumVhGfvcJ02nfaus/exec',
+            $http({
+                method: 'POST',
+                url: "https://script.google.com/macros/s/AKfycbx5xfsnqZ8ICQHQylIKKo1eABSvrVYIVMvZumVhGfvcJ02nfaus/exec",
                 data: JSON.stringify($scope.modelList),
-                dataType: "json",
-                type: "POST",
-                crossDomain: true,
-                beforeSend: function () {
-                    //$scope.updateLoading = false;
-                },
-                success: function (data) {
-                    alert('Операция выполнена успешно');
-                    //$scope.updateLoading = false;
-                },
-                error: function (data) {
-                    alert('Ошибка! Изменения не сохранены! =(');
-                    //$scope.updateLoading = false;
-                }
-            });
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+            }).success(function (data, status) {
+                alert('Операция выполнена успешно');
+                $scope.updateLoading = false;
+            }).error(function () {
+                alert('Ошибка! Изменения не сохранены! =(');
+                $scope.updateLoading = false;
+            });            
         }
 
         $scope.addNewItem = function () {

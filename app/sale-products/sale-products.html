@@ -1,4 +1,4 @@
-﻿<div class="row" ng-hide="modelList.length == 0">
+﻿<div class="row" ng-hide="modelList.length == 0 || updateLoading">
     <h3>Продажа товара</h3>
     <div class="col-xs-12 top20">
         <button class="btn btn-default btn-block" ng-click="updateList()">Обновить</button>
@@ -39,7 +39,7 @@
 </div>
 
 
-<div class="col-xs-12" ng-show="modelList.length == 0">
+<div class="col-xs-12" ng-show="modelList.length == 0 || updateLoading">
     <div class="text-center" style="margin-top: 150px">
         <img src="/images/loading.gif" width="100" />
     </div>

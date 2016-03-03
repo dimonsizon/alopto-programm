@@ -5,6 +5,7 @@ angular.module('app.saleProducts', ['ngRoute'])
 .controller('SaleProductsCtrl', ['$scope', '$http', '$rootScope',
     function ($scope, $http, $rootScope) {
         $scope.modelList = [];
+        $scope.updateLoading = false;
         var saleModel = {
             'date': Date.now(),
             'allCaseCount': 0,
@@ -26,6 +27,8 @@ angular.module('app.saleProducts', ['ngRoute'])
             });
 
         $scope.updateList = function () {
+            $scope.updateLoading = true;
+
             for (var i = 0; i < $scope.modelList.length; i++) {
                 
                 //всего продали штук
@@ -49,19 +52,19 @@ angular.module('app.saleProducts', ['ngRoute'])
                 
 
             }
-            calAllSaleData();
-            $.ajax({
-                url: 'https://script.google.com/macros/s/AKfycbx5xfsnqZ8ICQHQylIKKo1eABSvrVYIVMvZumVhGfvcJ02nfaus/exec',
+            //calAllSaleData();
+
+            $http({
+                method: 'POST',
+                url: "https://script.google.com/macros/s/AKfycbx5xfsnqZ8ICQHQylIKKo1eABSvrVYIVMvZumVhGfvcJ02nfaus/exec",
                 data: JSON.stringify($scope.modelList),
-                dataType: "json",
-                type: "POST",
-                crossDomain: true,
-                success: function (data) {
-                    alert('Операция выполнена успешно');
-                },
-                error: function (data) {
-                    alert('Ошибка! Изменения не сохранены! =(');
-                }
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+            }).success(function (data, status) {
+                alert('Операция выполнена успешно');
+                $scope.updateLoading = false;
+            }).error(function () {
+                alert('Ошибка! Изменения не сохранены! =(');
+                $scope.updateLoading = false;
             });
         }
 
