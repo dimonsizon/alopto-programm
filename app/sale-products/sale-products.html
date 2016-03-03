@@ -1,5 +1,5 @@
 ﻿<div class="row" ng-hide="modelList.length == 0">
-    <h3>Продажа</h3>
+    <h3>Продажа товара</h3>
     <div class="col-xs-12 top20">
         <button class="btn btn-default btn-block" ng-click="updateList()">Обновить</button>
     </div>
@@ -8,7 +8,7 @@
             <div class="col-xs-4 first-col">
                 <span>{{item.model}}</span>
             </div>
-            <div class="col-xs-2">
+            <div class="col-xs-1">
                 {{item.type}}
             </div>
             <div class="form-group col-xs-6" ng-hide="item.rowType=='title' || item.rowType=='sub-title'">
