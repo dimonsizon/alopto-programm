@@ -3,24 +3,40 @@
 
     <div class="col-xs-12 top20">
         <button class="btn btn-default btn-block" ng-click="updateList()">Обновить</button>
-        <button class="btn btn-default btn-block" ng-click="calcThisSale()">Расчитать</button>
+        <button class="btn btn-default btn-block" ng-click="currentSale.getSaleInfo();">Расчитать</button>
     </div>
 
     
     <div class="col-xs-12">
         <h3 class="top30">Итоговый список</h3>
-        <div ng-repeat="item in modelList" ng-if="item.saleCount > 0">
-            <div class="col-xs-4 first-col">
-                <span>{{item.model}}</span>
-            </div>
-            <div class="col-xs-2">
-                {{item.type}}
-            </div>
-            <div class="col-xs-6">
-                {{item.saleCount}}
-            </div>
-        </div>
-        <p>Итого {{saleModel.allCaseCount}} штук</p>
+        <table class="table table-condensed table-hover">
+            <thead>
+                <tr>
+                    <th>Наименование</th>
+                    <th>Тип/цвет</th>
+                    <th>Количество</th>
+                    <th>Цена за штуку</th>
+                    <th>Итого цена</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="item in modelList" ng-if="item.saleCount > 0">
+                    <td>{{item.model}}</td>
+                    <td>{{item.type}}</td>
+                    <td>{{item.saleCount}}</td>
+                    <td>{{item.currentPrice}} руб</td>
+                    <td>{{item.saleCount * item.currentPrice}} руб</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td><b>{{saleModel.allCaseCount}}</b> штук</td>
+                    <td></td>
+                    <td><b>{{saleModel.sum}}</b> руб</td>
+                </tr>
+            </tbody>
+        </table>
+        <p>Чистая прибыль {{saleModel.ourProfit}}</p>
     </div>
 
     <div class="model-list col-xs-12">
