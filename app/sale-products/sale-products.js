@@ -6,7 +6,7 @@ angular.module('app.saleProducts', ['ngRoute'])
     function ($scope, $http, $rootScope) {
         $scope.modelList = [];
         $scope.updateLoading = false;
-        var saleModel = {
+        $scope.saleModel = {
             'date': Date.now(),
             'allCaseCount': 0,
             'appleCaseCount': 0,
@@ -28,31 +28,14 @@ angular.module('app.saleProducts', ['ngRoute'])
 
         $scope.updateList = function () {
             $scope.updateLoading = true;
-
             for (var i = 0; i < $scope.modelList.length; i++) {
-                
-                //всего продали штук
-                saleModel.allCaseCount = saleModel.allCaseCount + $scope.modelList[i].saleCount; 
-
-                //считаем сколько из них apple
-                if ($scope.modelList[i].isApple) {  
-                    saleModel.appleCaseCount = saleModel.appleCaseCount + $scope.modelList[i].saleCount;
-                } else {    //считаем сколько из них других моделей
-                    saleModel.otherCaseCount = saleModel.otherCaseCount + $scope.modelList[i].saleCount;
-                }
-                //считаем сумму, на которую продали
-                //не готово еше =(
-
-
-
                 if ($scope.modelList[i].rowType != 'title' && $scope.modelList[i].rowType != 'sub-title') {
                     $scope.modelList[i].count = $scope.modelList[i].count - $scope.modelList[i].saleCount;
                     $scope.modelList[i].saleCount = 0;
                 }
-                
-
             }
-            //calAllSaleData();
+
+            updateSalesTable(); //записать все в таблицу продаж
 
             $http({
                 method: 'POST',
@@ -68,15 +51,41 @@ angular.module('app.saleProducts', ['ngRoute'])
             });
         }
 
-        function calAllSaleData() {           
+        //вычисление текущей продажи
+        $scope.calcThisSale = function () {
+            var saleModel = $scope.saleModel;
+            for (var i = 0; i < $scope.modelList.length; i++) {
+
+                $scope.modelList[i].saleCount == undefined ? $scope.modelList[i].saleCount = 0 : ''; //for disabled input
+
+                //всего продали штук
+                saleModel.allCaseCount = saleModel.allCaseCount + $scope.modelList[i].saleCount;
+
+                //считаем сколько из них apple
+                if ($scope.modelList[i].isApple) {
+                    saleModel.appleCaseCount = saleModel.appleCaseCount + $scope.modelList[i].saleCount;
+                } else {    //считаем сколько из них других моделей
+                    saleModel.otherCaseCount = saleModel.otherCaseCount + $scope.modelList[i].saleCount;
+                }
+                //считаем сумму, на которую продали
+                //не готово еше =(
+
+
+
+                
+            }
+        }
+
+        function updateSalesTable() {           
             //запись в таблицу продаж
             $.ajax({
                 url: 'https://script.google.com/macros/s/AKfycbxrRFcJhgMnNYj51ELQldNdIHzv3YRTJoaA1Dl9qA/exec',
-                data: JSON.stringify(saleModel),
+                data: JSON.stringify($scope.saleModel),
                 dataType: "json",
                 type: "POST",
                 crossDomain: true,
                 success: function (data) {
+                    //нужно селать сброс модели еще не забыть
                     //alert('Операция выполнена успешно');
                 },
                 error: function (data) {
