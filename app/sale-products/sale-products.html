@@ -3,15 +3,16 @@
     <div class="col-xs-12 top20">
         <button class="btn btn-default btn-block" ng-click="updateList()">Обновить</button>
     </div>
+
     <div class="model-list col-xs-12">
-        <div class="row row-item" ng-class="{'title' : item.rowType == 'title', 'sub-title' : item.rowType == 'sub-title'}" ng-repeat="item in modelList">
+        <div class="row row-item" ng-class="{'title' : item.rowType == 'title', 'sub-title' : item.rowType == 'sub-title', 'has-changes' : item.saleCount > 0}" ng-repeat="item in modelList">
             <div class="col-xs-4 first-col">
                 <span>{{item.model}}</span>
             </div>
             <div class="col-xs-1">
                 {{item.type}}
             </div>
-            <div class="form-group col-xs-6" ng-hide="item.rowType=='title' || item.rowType=='sub-title'">
+            <div class="form-group col-xs-6" ng-class="{'has-success' : item.saleCount > 0}" ng-hide="item.rowType=='title' || item.rowType=='sub-title'">
                 <input class="form-control count" type="number" ng-model="item.saleCount" min="0" ng-disabled="item.count == 0" />
                 <span class="text-success" ng-show="item.count > 0"><b>{{item.count}}</b> в наличии</span>
                 <span class="text-danger" ng-show="item.count == 0">Нет в наличии</span>
