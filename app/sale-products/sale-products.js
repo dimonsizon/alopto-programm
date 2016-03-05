@@ -125,19 +125,15 @@ angular.module('app.saleProducts', ['ngRoute'])
 
         function updateSalesTable() {           
             //запись в таблицу продаж
-            $.ajax({
-                url: 'https://script.google.com/macros/s/AKfycbxrRFcJhgMnNYj51ELQldNdIHzv3YRTJoaA1Dl9qA/exec',
+            $http({
+                method: 'POST',
+                url: "https://script.google.com/macros/s/AKfycbxrRFcJhgMnNYj51ELQldNdIHzv3YRTJoaA1Dl9qA/exec",
                 data: JSON.stringify($scope.saleModel),
-                dataType: "json",
-                type: "POST",
-                crossDomain: true,
-                success: function (data) {
-                    //нужно селать сброс модели еще не забыть
-                    //alert('Операция выполнена успешно');
-                },
-                error: function (data) {
-                    alert('Ошибка! Изменения не сохранены! =(');
-                }
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+            }).success(function (data, status) {
+                //нужно селать сброс модели еще не забыть
+            }).error(function () {
+
             });
         };
     }]);
