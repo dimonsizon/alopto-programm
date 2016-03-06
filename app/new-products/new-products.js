@@ -7,10 +7,13 @@ angular.module('app.newProducts', ['ngRoute'])
         $scope.modelList = [];
         $scope.modelListLoading = true;
         $scope.updateLoading = false;
+        $scope.updateComingTableLoading = false;
         $scope.isHasNewProductsInfo = false;
 
         $scope.errorUpdateList = false;         //ошибка обновления наличия товара
+        $scope.errorUpdateComingTable = false;  //ошибка обновления послупления товара
         $scope.tryUpdateList = false;           //пытались обновить наличия товара или нет
+        $scope.tryUpdateComingTable = false;    //пытались обновить поступление товара или нет
 
         $scope.saleModel = {
             'date': Date.now(),
@@ -75,13 +78,33 @@ angular.module('app.newProducts', ['ngRoute'])
             }).success(function (data, status) {
                 alert('Операция выполнена успешно');
                 $scope.errorUpdateList = false;         //ошибки нет
-                $scope.updateLoading = false;
+                $scope.updateLoading = false;           //стоп лоадинг
+                updateComingTable();                    //запись информации о поступлении в таблицу постепления                   
             }).error(function () {
                 alert('Ошибка! Изменения не сохранены! =(');
                 $scope.errorUpdateList = true;         //ошибка есть
                 $scope.updateLoading = false;
             });            
         }
+
+        function updateComingTable() {
+            //запись в таблицу поступления
+            $scope.updateComingTableLoading = true;
+            $scope.tryUpdateComingTable = true;   //пытались обновить таблицу поступления или нет
+
+            $http({
+                method: 'POST',
+                url: "https://script.google.com/macros/s/AKfycbxYVeEnuGLQM-QxXeWF3emj_9JlpsZ5S_2g_uWWQ6snh0RHUrJD/exec",
+                data: JSON.stringify($scope.saleModel),
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+            }).success(function (data, status) {
+                $scope.updateComingTableLoading = false;
+                $scope.errorUpdateComingTable = false;   //ошибки нет
+            }).error(function () {
+                $scope.updateComingTableLoading = false;
+                $scope.errorUpdateComingTable = true;   //ошибка есть
+            });
+        };
 
         $scope.addNewItem = function () {
             var model = [
