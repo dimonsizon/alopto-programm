@@ -52,6 +52,10 @@ h1, h2, h3, h4, h5 {
     .model-list .row-item.has-changes {
         background-color: #B5F3B5;
     }
+    .model-list .row-item.has-error {
+        background-color: #F9C3C8;
+    }
+
         .model-list .title {
             margin-top: 10px;
             padding: 5px 0;

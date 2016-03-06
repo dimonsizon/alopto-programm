@@ -45,14 +45,14 @@
     <div class="model-list col-xs-12" ng-if="!isHasSaleInfo">
         <button class="btn btn-default btn-block" ng-click="currentSale.getSaleInfo();"><i class="fa fa-calculator"></i> Расчитать</button>
 
-        <div class="row row-item" ng-class="{'title' : item.rowType == 'title', 'sub-title' : item.rowType == 'sub-title', 'has-changes' : item.saleCount > 0}" ng-repeat="item in modelList">
+        <div class="row row-item" ng-class="{'title' : item.rowType == 'title', 'sub-title' : item.rowType == 'sub-title', 'has-changes' : item.saleCount > 0, 'has-error' : item.saleCount > item.count}" ng-repeat="item in modelList">
             <div class="col-xs-4 first-col">
                 <span>{{item.model}}</span>
             </div>
             <div class="col-xs-1">
                 {{item.type}}
             </div>
-            <div class="form-group col-xs-6" ng-class="{'has-success' : item.saleCount > 0}" ng-hide="item.rowType=='title' || item.rowType=='sub-title'">
+            <div class="form-group col-xs-6" ng-class="{'has-success' : item.saleCount > 0, 'has-error' : item.saleCount > item.count}" ng-hide="item.rowType=='title' || item.rowType=='sub-title'">
                 <input class="form-control count" type="number" ng-model="item.saleCount" min="0" ng-maxlength="item.count" ng-disabled="item.count == 0" />
                 <span class="text-success has-count" ng-show="item.count > 0"><b>{{item.count}}</b> в наличии</span>
                 <span class="text-danger has-count" ng-show="item.count == 0">Нет в наличии</span>
