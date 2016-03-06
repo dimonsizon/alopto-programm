@@ -131,7 +131,6 @@ angular.module('app.saleProducts', ['ngRoute'])
         $scope.updateList = function () {
             $scope.updateLoading = true;
             $scope.tryUpdateList = true; //пытались обновить наличия товара
-
             
             if ($scope.tryUpdateList) { //если пытаемся первый раз
                 //считаем новые значения, которые будем заносить в наличие
@@ -149,17 +148,11 @@ angular.module('app.saleProducts', ['ngRoute'])
                 data: JSON.stringify($scope.modelList),
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
             }).success(function (data, status) {
-                alert('Операция выполнена успешно');
-
-                $scope.errorUpdateList = false;         //ошибки нет
-
-                
-                updateSalesTable(); //записать все в таблицу продаж
-
+                $scope.errorUpdateList = false;         //ошибки нет                
+                updateSalesTable();                     //записать все в таблицу продаж
                 $scope.updateLoading = false;
                 //$scope.isHasSaleInfo = false;
             }).error(function () {
-                //alert('Ошибка! Изменения не сохранены! =(');
                 $scope.errorUpdateList = true;         //ошибка есть
                 $scope.updateLoading = false;
             });
@@ -178,8 +171,6 @@ angular.module('app.saleProducts', ['ngRoute'])
             }).success(function (data, status) {
                 $scope.updateSalesTableLoading = false;
                 $scope.errorUpdateSalesTable = false;   //ошибки нет
-                //сброс модели расчетов по текущей продаже
-                //$scope.currentSale.resetSaleModel();
             }).error(function () {
                 $scope.updateSalesTableLoading = false;
                 $scope.errorUpdateSalesTable = true;   //ошибка есть
