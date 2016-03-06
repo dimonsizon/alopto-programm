@@ -30,6 +30,15 @@ h1, h2, h3, h4, h5 {
     margin-top: 30px;
 }
 
+.scroll-up-arrow {
+    font-size: 60px;
+    position: fixed;
+    right: 20px;
+    bottom: 20px;
+    cursor: pointer;
+    z-index: 10;
+}
+
 .model-list {
     font-size: 12px;
 }
@@ -79,4 +88,8 @@ h1, h2, h3, h4, h5 {
                 .model-list .form-control.count {
                     width: 80px;
                     display: inline-block;
+                }
+
+                .model-list .has-count {
+                    margin-left: 10px;
                 }

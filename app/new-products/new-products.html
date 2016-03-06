@@ -15,8 +15,8 @@
             </div>
             <div class="form-group col-xs-6" ng-hide="item.rowType=='title' || item.rowType=='sub-title'">
                 <input class="form-control count" type="number" ng-model="item.newCount" min="0" />
-                <span class="text-success" ng-show="item.count > 0"><b>{{item.count}}</b> в наличии</span>
-                <span class="text-danger" ng-show="item.count == 0">Нет в наличии</span>
+                <span class="text-success has-count" ng-show="item.count > 0"><b>{{item.count}}</b> в наличии</span>
+                <span class="text-danger has-count" ng-show="item.count == 0">Нет в наличии</span>
             </div>
         </div>
     </div>

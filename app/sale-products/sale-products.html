@@ -3,7 +3,7 @@
 
     <div class="col-xs-12 top20">
         <button class="btn btn-default btn-block" ng-click="updateList()">Обновить</button>
-        <button class="btn btn-default btn-block" ng-click="currentSale.getSaleInfo();">Расчитать</button>
+        <button class="btn btn-default btn-block" ng-click="currentSale.getSaleInfo();"><i class="fa fa-calculator"></i> Расчитать</button>
     </div>
 
     
@@ -49,8 +49,8 @@
             </div>
             <div class="form-group col-xs-6" ng-class="{'has-success' : item.saleCount > 0}" ng-hide="item.rowType=='title' || item.rowType=='sub-title'">
                 <input class="form-control count" type="number" ng-model="item.saleCount" min="0" ng-maxlength="item.count" ng-disabled="item.count == 0" />
-                <span class="text-success" ng-show="item.count > 0"><b>{{item.count}}</b> в наличии</span>
-                <span class="text-danger" ng-show="item.count == 0">Нет в наличии</span>
+                <span class="text-success has-count" ng-show="item.count > 0"><b>{{item.count}}</b> в наличии</span>
+                <span class="text-danger has-count" ng-show="item.count == 0">Нет в наличии</span>
             </div>
         </div>
     </div>

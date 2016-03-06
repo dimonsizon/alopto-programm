@@ -28,10 +28,14 @@ angular.module('app', [
                 redirectTo: '/home'
             });
         }])
-        .run(['$rootScope', '$location',
-            function ($rootScope, $location) {
+        .run(['$rootScope', '$location', '$window',
+            function ($rootScope, $location, $window) {
                 $rootScope.setActive = function (localPath) {
                     return $location.path() === localPath;
+                }
+
+                $rootScope.scrollTop = function () {
+                    $window.scrollTo(0, 0);
                 }
             }
         ]);
