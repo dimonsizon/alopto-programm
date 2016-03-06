@@ -7,6 +7,17 @@ angular.module('app.newProducts', ['ngRoute'])
         $scope.modelList = [];
         $scope.modelListLoading = true;
         $scope.updateLoading = false;
+        $scope.isHasNewProductsInfo = false;
+
+        $scope.errorUpdateList = false;         //ошибка обновления наличия товара
+        $scope.tryUpdateList = false;           //пытались обновить наличия товара или нет
+
+        $scope.saleModel = {
+            'date': Date.now(),
+            'allCaseCount': 0,
+            'appleCaseCount': 0,
+            'otherCaseCount': 0
+        }
 
         $http.get('https://script.google.com/macros/s/AKfycbx5xfsnqZ8ICQHQylIKKo1eABSvrVYIVMvZumVhGfvcJ02nfaus/exec').
             success(function (data, status) {
@@ -18,8 +29,36 @@ angular.module('app.newProducts', ['ngRoute'])
             }).finally(function () {
             });
 
+        $scope.newProducts = {
+            getListInfo: function () {
+                $scope.isHasNewProductsInfo = true;         //открыта таблица нового поступления
+                $scope.newProducts.getNewProductsCount();   //считаем количество нового поступления
+            },
+            getNewProductsCount: function () {
+                var saleModel = $scope.saleModel;
+                for (var i = 0; i < $scope.modelList.length; i++) {
+
+                    //$scope.modelList[i].newCount == undefined ? $scope.modelList[i].newCount = 0 : ''; //for disabled input
+
+                    //всего поступило штук
+                    saleModel.allCaseCount = saleModel.allCaseCount + $scope.modelList[i].newCount;
+
+                    //считаем сколько из них apple
+                    if ($scope.modelList[i].isApple) {
+                        saleModel.appleCaseCount = saleModel.appleCaseCount + $scope.modelList[i].newCount;
+                    } else {    //считаем сколько из них других моделей
+                        saleModel.otherCaseCount = saleModel.otherCaseCount + $scope.modelList[i].newCount;
+                    }
+                }
+            },
+            backToEdit: function () {
+                $scope.isHasNewProductsInfo = false;    //возврат к изменению поступления                
+            }
+        }
+
         $scope.updateList = function () {                        
             $scope.updateLoading = true;
+            $scope.tryUpdateList = true; //пытались обновить наличия товара
 
             for (var i = 0; i < $scope.modelList.length; i++) {
                 if ($scope.modelList[i].rowType != 'title' && $scope.modelList[i].rowType != 'sub-title') {
@@ -35,9 +74,11 @@ angular.module('app.newProducts', ['ngRoute'])
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
             }).success(function (data, status) {
                 alert('Операция выполнена успешно');
+                $scope.errorUpdateList = false;         //ошибки нет
                 $scope.updateLoading = false;
             }).error(function () {
                 alert('Ошибка! Изменения не сохранены! =(');
+                $scope.errorUpdateList = true;         //ошибка есть
                 $scope.updateLoading = false;
             });            
         }
@@ -71,24 +112,4 @@ angular.module('app.newProducts', ['ngRoute'])
             });
         }
 
-        //удалить потом
-        $scope.addNewItemOLD = function () {
-            var model = {
-                "model": $scope.new.model,
-                "type": $scope.new.type,
-                "count": $scope.new.count
-            };
-            $.ajax({
-                url: 'https://script.google.com/macros/s/AKfycbx5xfsnqZ8ICQHQylIKKo1eABSvrVYIVMvZumVhGfvcJ02nfaus/exec',
-                data: JSON.stringify(model),
-                dataType: "json",
-                type: "POST",
-                crossDomain: true,
-                success: function (data) {
-                    $scope.new.model = '';
-                    $scope.new.type = '';
-                    $scope.new.count = '';
-                }
-            });
-        }
     }]);

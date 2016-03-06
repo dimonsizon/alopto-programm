@@ -1,19 +1,52 @@
 ﻿<div class="row" ng-hide="modelListLoading || updateLoading">
-    <h3>Поступление товара</h3>
+    <h3>Поступление товара</h3>   
 
-    <div class="col-xs-12 top20">
-        <button class="btn btn-default btn-block" ng-click="updateList()">Обновить</button>
+    <div class="col-xs-12" ng-if="isHasNewProductsInfo">
+        <div class="col-xs-12 top20">
+            <h3><a class="btn btn-link" ng-click="newProducts.backToEdit()"><i class="fa fa-chevron-left"></i> Вернуться назад</a></h3>
+            <button class="btn btn-default btn-block top20" ng-click="updateList()" ng-disabled="saleModel.allCaseCount == 0"><i class="fa fa-check"></i> Внести новое поступление</button>
+        </div>
+
+        <div class="col-xs-12 top30">
+            <h3>Список нового поступление</h3>
+            <table class="table table-condensed table-hover top15">
+                <thead>
+                    <tr>
+                        <th>Наименование</th>
+                        <th>Тип/цвет</th>
+                        <th>Количество</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="item in modelList" ng-if="item.newCount > 0">
+                        <td>{{item.model}}</td>
+                        <td>{{item.type}}</td>
+                        <td>{{item.newCount}}</td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td>
+                            <p>Итого: <b>{{saleModel.allCaseCount}}</b> штук</p>
+                            <p>Apple: <b>{{saleModel.appleCaseCount}}</b> штук</p>
+                            <p>Другие: <b>{{saleModel.otherCaseCount}}</b> штук</p>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
+    <div class="model-list col-xs-12" ng-if="!isHasNewProductsInfo">
+        <button class="btn btn-default btn-block" ng-click="newProducts.getListInfo()">Сделать послупление</button>
 
-    <div class="model-list col-xs-12">
-        <div class="row row-item" ng-class="{'title' : item.rowType == 'title', 'sub-title' : item.rowType == 'sub-title'}" ng-repeat="item in modelList">
+        <div class="row row-item" ng-class="{'title' : item.rowType == 'title', 'sub-title' : item.rowType == 'sub-title', 'has-changes' : item.newCount > 0}" ng-repeat="item in modelList">
             <div class="col-xs-4 first-col">
                 <span>{{item.model}}</span>
             </div>
             <div class="col-xs-1">
                 {{item.type}}
             </div>
-            <div class="form-group col-xs-6" ng-hide="item.rowType=='title' || item.rowType=='sub-title'">
+            <div class="form-group col-xs-6" ng-class="{'has-success' : item.newCount > 0}" ng-hide="item.rowType=='title' || item.rowType=='sub-title'">
                 <input class="form-control count" type="number" ng-model="item.newCount" min="0" />
                 <span class="text-success has-count" ng-show="item.count > 0"><b>{{item.count}}</b> в наличии</span>
                 <span class="text-danger has-count" ng-show="item.count == 0">Нет в наличии</span>
@@ -21,12 +54,10 @@
         </div>
     </div>
 
-    <div class="col-xs-12 top20">
-        <button class="btn btn-default btn-block" ng-click="updateList()">Обновить</button>
-    </div>
+
     <hr />
 
-    <div class="col-xs-12 top20">
+    <div class="col-xs-12 top20" ng-hide="true">
         <div class="col-xs-3">
             <input type="text" ng-model="new.model" placeholder="Модель" />
         </div>
