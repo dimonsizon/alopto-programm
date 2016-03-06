@@ -1,11 +1,11 @@
 ﻿<div class="row" ng-hide="modelList.length == 0 || updateLoading">
     <h3>Продажа товара</h3>
 
-    <div class="col-xs-12" ng-if="isHasSaleInfo">
-        <div class="col-xs-12 top25">
-            <a class="btn btn-link" ng-click="currentSale.backToEdit()"><i class="fa fa-chevron-left"></i> Вернуться назад</a>
-            <button class="btn btn-default btn-block" ng-click="updateList()"><i class="fa fa-check"></i> Сделать продажу</button>
-        </div>        
+    <div class="col-xs-12" ng-if="isHasSaleInfo && !tryUpdateList">
+        <div class="col-xs-12 top20">
+            <h3><a class="btn btn-link" ng-click="currentSale.backToEdit()"><i class="fa fa-chevron-left"></i> Вернуться назад</a></h3>
+            <button class="btn btn-default btn-block top20" ng-click="updateList()" ng-disabled="saleModel.allCaseCount == 0"><i class="fa fa-check"></i> Сделать продажу</button>
+        </div>
 
         <div class="col-xs-12 top30">
             <h3>Итоговый список</h3>
@@ -61,8 +61,28 @@
     </div>
 </div>
 
+<div class="col-xs-12">
+    <div ng-if="tryrUpdateSalesTable && !errorUpdateSalesTable && !updateSalesTableLoading">
+        <p class="text-success"><i class="fa fa-check"></i> Продажа успешно совершена.</p>
+        <p class="text-success"><i class="fa fa-check"></i> Документ наличия обновлен.</p>
+        <p class="text-success"><i class="fa fa-check"></i> Продажа занесена в таблицу продаж.</p>
+        <button class="btn btn-default btn-block" ng-click="currentSale.addNewSale()">Сделать новую продажу</button>
+    </div>
+    <div ng-if="tryUpdateList && errorUpdateList && !updateSalesTableLoading">
+        <p class="text-danger"><i class="fa fa-exclamation-circle"></i> При сохренении продажи возникли ошибки. Нажмите кнопку "Повторить". Возможно это связанно с интернет соединением. Если повтор не поможет проверьте интернет соединение, подождите пару минут или попытайтесь еще раз, обновив страницу.</p>
+        <p class="text-danger"><i class="fa fa-exclamation-circle"></i> Документ наличия не обновлен.</p>
+        <p class="text-danger"><i class="fa fa-exclamation-circle"></i> Продажа не занесена в таблицу продаж.</p>
+        <button class="btn btn-default btn-block" ng-click="updateList()">Повторить</button>
+    </div>
+    <div ng-if="tryrUpdateSalesTable && errorUpdateSalesTable && !updateSalesTableLoading">
+        <p class="text-danger"><i class="fa fa-exclamation-circle"></i> При сохренении продажи возникли ошибки, нажмите кнопку "Повторить". Не закрывайте и не перезагружайте страницу, так как документ наличия обновился, но возникли проблемы с сохренением продажи в таблицу продаж. Возможно это связанно с интернет соединением. Если повтор не поможет проверьте интернет соединение или подождите пару минут.</p>
+        <p class="text-success"><i class="fa fa-check"></i> Документ наличия обновлен.</p>
+        <p class="text-danger"><i class="fa fa-exclamation-circle"></i> Продажа не занесена в таблицу продаж.</p>
+        <button class="btn btn-default btn-block" ng-click="updateSalesTable()">Повторить</button>
+    </div>
+</div>
 
-<div class="col-xs-12" ng-show="modelList.length == 0 || updateLoading">
+<div class="col-xs-12" ng-show="modelList.length == 0 || updateLoading || updateSalesTableLoading">
     <div class="text-center" style="margin-top: 150px">
         <img src="/images/loading.gif" width="100" />
     </div>

@@ -9,6 +9,12 @@ angular.module('app.saleProducts', ['ngRoute'])
         $scope.updateLoading = false;
         $scope.updateSalesTableLoading = false;
         $scope.isHasSaleInfo = false; //расчитана продажа или еще нет
+
+        $scope.errorUpdateList = false;         //ошибка обновления наличия товара
+        $scope.errorUpdateSalesTable = false;   //ошибка обновления таблицы продаж
+        $scope.tryUpdateList = false;         //пытались обновить наличия товара или нет
+        $scope.tryrUpdateSalesTable = false;   //пытались обновить таблицу продаж или нет
+
         $scope.saleModel = {
             'date': Date.now(),
             'allCaseCount': 0,
@@ -99,48 +105,10 @@ angular.module('app.saleProducts', ['ngRoute'])
                 }
             },
             backToEdit: function () {
-                $scope.isHasSaleInfo = false;            //возврат к изменению продажи
-            }
-        }
-
-        //обновляем наличие товара
-        $scope.updateList = function () {
-            $scope.updateLoading = true;
-            for (var i = 0; i < $scope.modelList.length; i++) {
-                if ($scope.modelList[i].rowType != 'title' && $scope.modelList[i].rowType != 'sub-title') {
-                    $scope.modelList[i].count = $scope.modelList[i].count - $scope.modelList[i].saleCount;
-                    $scope.modelList[i].saleCount = 0;
-                }
-            }
-
-            updateSalesTable(); //записать все в таблицу продаж
-
-            $http({
-                method: 'POST',
-                url: "https://script.google.com/macros/s/AKfycbx5xfsnqZ8ICQHQylIKKo1eABSvrVYIVMvZumVhGfvcJ02nfaus/exec",
-                data: JSON.stringify($scope.modelList),
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
-            }).success(function (data, status) {
-                alert('Операция выполнена успешно');
-                $scope.updateLoading = false;
-                $scope.isHasSaleInfo = false;
-            }).error(function () {
-                alert('Ошибка! Изменения не сохранены! =(');
-                $scope.updateLoading = false;
-            });
-        }       
-
-        function updateSalesTable() {           
-            //запись в таблицу продаж
-            $scope.updateSalesTableLoading = true;
-            $http({
-                method: 'POST',
-                url: "https://script.google.com/macros/s/AKfycbxrRFcJhgMnNYj51ELQldNdIHzv3YRTJoaA1Dl9qA/exec",
-                data: JSON.stringify($scope.saleModel),
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
-            }).success(function (data, status) {
-                $scope.updateSalesTableLoading = false;
-                //сброс модели
+                $scope.isHasSaleInfo = false;            //возврат к изменению продажи                
+                $scope.currentSale.resetSaleModel();    //сброс модели расчетов по текущей продаже
+            },
+            resetSaleModel: function () {
                 $scope.saleModel = {
                     'date': Date.now(),
                     'allCaseCount': 0,
@@ -150,8 +118,71 @@ angular.module('app.saleProducts', ['ngRoute'])
                     'persentWrapping': '',
                     'ourProfit': 0
                 }
-            }).error(function () {
+            },
+            addNewSale: function () {
+                $scope.currentSale.resetSaleModel(); //сброс модели расчетов по текущей продаже
+                $scope.isHasSaleInfo = false;        //снова показываем список моделей
+                $scope.tryUpdateList = false;         //пытались обновить наличия товара или нет
+                $scope.tryrUpdateSalesTable = false;   //пытались обновить таблицу продаж или нет
+            }
+        }
 
+        //обновляем наличие товара
+        $scope.updateList = function () {
+            $scope.updateLoading = true;
+            $scope.tryUpdateList = true; //пытались обновить наличия товара
+
+            
+            if ($scope.tryUpdateList) { //если пытаемся первый раз
+                //считаем новые значения, которые будем заносить в наличие
+                for (var i = 0; i < $scope.modelList.length; i++) {
+                    if ($scope.modelList[i].rowType != 'title' && $scope.modelList[i].rowType != 'sub-title') {
+                        $scope.modelList[i].count = $scope.modelList[i].count - $scope.modelList[i].saleCount;
+                        $scope.modelList[i].saleCount = 0; //очищаем инпуты
+                    }
+                }
+            }
+
+            $http({
+                method: 'POST',
+                url: "https://script.google.com/macros/s/AKfycbx5xfsnqZ8ICQHQylIKKo1eABSvrVYIVMvZumVhGfvcJ02nfaus/exec",
+                data: JSON.stringify($scope.modelList),
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+            }).success(function (data, status) {
+                alert('Операция выполнена успешно');
+
+                $scope.errorUpdateList = false;         //ошибки нет
+
+                
+                updateSalesTable(); //записать все в таблицу продаж
+
+                $scope.updateLoading = false;
+                //$scope.isHasSaleInfo = false;
+            }).error(function () {
+                //alert('Ошибка! Изменения не сохранены! =(');
+                $scope.errorUpdateList = true;         //ошибка есть
+                $scope.updateLoading = false;
+            });
+        }       
+
+        function updateSalesTable() {           
+            //запись в таблицу продаж
+            $scope.updateSalesTableLoading = true;
+            $scope.tryrUpdateSalesTable = true;   //пытались обновить таблицу продаж или нет
+
+            $http({
+                method: 'POST',
+                url: "https://script.google.com/macros/s/AKfycbxrRFcJhgMnNYj51ELQldNdIHzv3YRTJoaA1Dl9qA/exec",
+                data: JSON.stringify($scope.saleModel),
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+            }).success(function (data, status) {
+                $scope.updateSalesTableLoading = false;
+                $scope.errorUpdateSalesTable = false;   //ошибки нет
+                //сброс модели расчетов по текущей продаже
+                //$scope.currentSale.resetSaleModel();
+            }).error(function () {
+                $scope.updateSalesTableLoading = false;
+                $scope.errorUpdateSalesTable = true;   //ошибка есть
             });
         };
     }]);
