@@ -7,13 +7,15 @@ angular.module('app.saleProducts', ['ngRoute'])
         $scope.modelList = [];
         $scope.currentSale = {};
         $scope.updateLoading = false;
+        $scope.updateSalesTableLoading = false;
+        $scope.isHasSaleInfo = false; //расчитана продажа или еще нет
         $scope.saleModel = {
             'date': Date.now(),
             'allCaseCount': 0,
             'appleCaseCount': 0,
             'otherCaseCount': 0,
             'sum': 0,
-            'persentWrapping': '70, 95',
+            'persentWrapping': '',
             'ourProfit': 0
         }
 
@@ -27,11 +29,13 @@ angular.module('app.saleProducts', ['ngRoute'])
             }).finally(function () {
             });
 
+        //подсчет всего по продаже
         $scope.currentSale = {
             getSaleInfo: function () {
                 $scope.currentSale.getCount();          //считаем количество               
                 $scope.currentSale.getPriceForEach();   //считаем цену для каждой позиции позиции
                 $scope.currentSale.getSumForEach();     //считаем сумму (руб)
+                $scope.isHasSaleInfo = true;            //продажа расчитана
             },
             getCount: function () {
                 var saleModel = $scope.saleModel;
@@ -93,9 +97,13 @@ angular.module('app.saleProducts', ['ngRoute'])
                         $scope.saleModel.ourProfit = $scope.saleModel.ourProfit + ourProfit;
                     }
                 }
+            },
+            backToEdit: function () {
+                $scope.isHasSaleInfo = false;            //возврат к изменению продажи
             }
         }
 
+        //обновляем наличие товара
         $scope.updateList = function () {
             $scope.updateLoading = true;
             for (var i = 0; i < $scope.modelList.length; i++) {
@@ -115,23 +123,33 @@ angular.module('app.saleProducts', ['ngRoute'])
             }).success(function (data, status) {
                 alert('Операция выполнена успешно');
                 $scope.updateLoading = false;
+                $scope.isHasSaleInfo = false;
             }).error(function () {
                 alert('Ошибка! Изменения не сохранены! =(');
                 $scope.updateLoading = false;
             });
-        }
-
-       
+        }       
 
         function updateSalesTable() {           
             //запись в таблицу продаж
+            $scope.updateSalesTableLoading = true;
             $http({
                 method: 'POST',
                 url: "https://script.google.com/macros/s/AKfycbxrRFcJhgMnNYj51ELQldNdIHzv3YRTJoaA1Dl9qA/exec",
                 data: JSON.stringify($scope.saleModel),
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
             }).success(function (data, status) {
-                //нужно селать сброс модели еще не забыть
+                $scope.updateSalesTableLoading = false;
+                //сброс модели
+                $scope.saleModel = {
+                    'date': Date.now(),
+                    'allCaseCount': 0,
+                    'appleCaseCount': 0,
+                    'otherCaseCount': 0,
+                    'sum': 0,
+                    'persentWrapping': '',
+                    'ourProfit': 0
+                }
             }).error(function () {
 
             });
