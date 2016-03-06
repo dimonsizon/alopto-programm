@@ -1,10 +1,10 @@
 ﻿<div class="row" ng-hide="modelListLoading || updateLoading">
     <h3>Поступление товара</h3>   
 
-    <div class="col-xs-12" ng-if="isHasNewProductsInfo">
+    <div class="col-xs-12" ng-if="isHasNewProductsInfo && !tryUpdateList">
         <div class="col-xs-12 top20">
             <h3><a class="btn btn-link" ng-click="newProducts.backToEdit()"><i class="fa fa-chevron-left"></i> Вернуться назад</a></h3>
-            <button class="btn btn-default btn-block top20" ng-click="updateList()" ng-disabled="saleModel.allCaseCount == 0"><i class="fa fa-check"></i> Внести новое поступление</button>
+            <button class="btn btn-default btn-block top20" ng-click="updateList()" ng-disabled="comingModel.allCaseCount == 0"><i class="fa fa-check"></i> Внести новое поступление</button>
         </div>
 
         <div class="col-xs-12 top30">
@@ -27,9 +27,9 @@
                         <td></td>
                         <td></td>
                         <td>
-                            <p>Итого: <b>{{saleModel.allCaseCount}}</b> штук</p>
-                            <p>Apple: <b>{{saleModel.appleCaseCount}}</b> штук</p>
-                            <p>Другие: <b>{{saleModel.otherCaseCount}}</b> штук</p>
+                            <p>Итого: <b>{{comingModel.allCaseCount}}</b> штук</p>
+                            <p>Apple: <b>{{comingModel.appleCaseCount}}</b> штук</p>
+                            <p>Другие: <b>{{comingModel.otherCaseCount}}</b> штук</p>
                         </td>
                     </tr>
                 </tbody>
@@ -41,7 +41,7 @@
 
         <div class="row row-item" ng-class="{'title' : item.rowType == 'title', 'sub-title' : item.rowType == 'sub-title', 'has-changes' : item.newCount > 0}" ng-repeat="item in modelList">
             <div class="col-xs-4 first-col">
-                <span>{{item.model}}</span>
+                <span><span ng-if="item.rowType != 'title' && item.rowType != 'sub-title'">{{$index}} - </span>{{item.model}}</span>
             </div>
             <div class="col-xs-1">
                 {{item.type}}
@@ -54,9 +54,29 @@
         </div>
     </div>
 
+    <div class="col-xs-12">
+        <div ng-if="tryUpdateComingTable && !errorUpdateComingTable && !updateComingTableLoading">
+            <p class="text-success"><i class="fa fa-check"></i> Новое поступление успешно добавлено.</p>
+            <p class="text-success"><i class="fa fa-check"></i> Документ наличия обновлен.</p>
+            <p class="text-success"><i class="fa fa-check"></i> Поступление занесено в таблицу поступления.</p>
+            <button class="btn btn-default btn-block" ng-click="currentSale.addNewComing()">Сделать новую продажу</button>
+        </div>
+        <div ng-if="tryUpdateList && errorUpdateList && !updateComingTableLoading">
+            <p class="text-danger"><i class="fa fa-exclamation-circle"></i> При сохренении нового поступления возникла ошибка. Нажмите кнопку "Повторить". Возможно это связанно с интернет соединением. Если повтор не поможет проверьте интернет соединение, подождите пару минут или попытайтесь еще раз, обновив страницу.</p>
+            <p class="text-danger"><i class="fa fa-exclamation-circle"></i> Документ наличия не обновлен.</p>
+            <p class="text-danger"><i class="fa fa-exclamation-circle"></i> Поступление не занесено в таблицу поступления.</p>
+            <button class="btn btn-default btn-block" ng-click="updateList()">Повторить</button>
+        </div>
+        <div ng-if="tryUpdateComingTable && errorUpdateComingTable && !updateComingTableLoading">
+            <p class="text-danger"><i class="fa fa-exclamation-circle"></i> При сохренении нового поступления возникла ошибка, нажмите кнопку "Повторить". Не закрывайте и не перезагружайте страницу, так как документ наличия обновился, но возникли проблемы с сохренением нового поступления в таблицу поступления. Возможно это связанно с интернет соединением. Если повтор не поможет проверьте интернет соединение или подождите пару минут.</p>
+            <p class="text-success"><i class="fa fa-check"></i> Документ наличия обновлен.</p>
+            <p class="text-danger"><i class="fa fa-exclamation-circle"></i> Поступление не занесено в таблицу поступления.</p>
+            <button class="btn btn-default btn-block" ng-click="updateComingTable()">Повторить</button>
+        </div>
+    </div>
+
 
     <hr />
-
     <div class="col-xs-12 top20" ng-hide="true">
         <div class="col-xs-3">
             <input type="text" ng-model="new.model" placeholder="Модель" />
@@ -72,7 +92,7 @@
 </div>
 
 
-<div class="col-xs-12" ng-show="modelListLoading || updateLoading">
+<div class="col-xs-12" ng-show="modelListLoading || updateLoading || updateComingTableLoading">
     <div class="text-center" style="margin-top: 150px">
         <img src="/images/loading.gif" width="100" />
     </div>

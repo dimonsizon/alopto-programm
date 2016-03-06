@@ -15,7 +15,7 @@ angular.module('app.newProducts', ['ngRoute'])
         $scope.tryUpdateList = false;           //пытались обновить наличия товара или нет
         $scope.tryUpdateComingTable = false;    //пытались обновить поступление товара или нет
 
-        $scope.saleModel = {
+        $scope.comingModel = {
             'date': Date.now(),
             'allCaseCount': 0,
             'appleCaseCount': 0,
@@ -38,24 +38,39 @@ angular.module('app.newProducts', ['ngRoute'])
                 $scope.newProducts.getNewProductsCount();   //считаем количество нового поступления
             },
             getNewProductsCount: function () {
-                var saleModel = $scope.saleModel;
+                var comingModel = $scope.comingModel;
                 for (var i = 0; i < $scope.modelList.length; i++) {
 
                     //$scope.modelList[i].newCount == undefined ? $scope.modelList[i].newCount = 0 : ''; //for disabled input
 
                     //всего поступило штук
-                    saleModel.allCaseCount = saleModel.allCaseCount + $scope.modelList[i].newCount;
+                    comingModel.allCaseCount = comingModel.allCaseCount + $scope.modelList[i].newCount;
 
                     //считаем сколько из них apple
                     if ($scope.modelList[i].isApple) {
-                        saleModel.appleCaseCount = saleModel.appleCaseCount + $scope.modelList[i].newCount;
+                        comingModel.appleCaseCount = comingModel.appleCaseCount + $scope.modelList[i].newCount;
                     } else {    //считаем сколько из них других моделей
-                        saleModel.otherCaseCount = saleModel.otherCaseCount + $scope.modelList[i].newCount;
+                        comingModel.otherCaseCount = comingModel.otherCaseCount + $scope.modelList[i].newCount;
                     }
                 }
             },
             backToEdit: function () {
-                $scope.isHasNewProductsInfo = false;    //возврат к изменению поступления                
+                $scope.isHasNewProductsInfo = false;    //возврат к изменению поступления
+                $scope.newProducts.resetComingModel();  //сброс информации по приходу
+            },
+            resetComingModel: function () {
+                $scope.comingModel = {
+                    'date': Date.now(),
+                    'allCaseCount': 0,
+                    'appleCaseCount': 0,
+                    'otherCaseCount': 0
+                }
+            },
+            addNewComing: function () {
+                $scope.newProducts.resetComingModel();  //сброс информации по приходу
+                $scope.isHasNewProductsInfo = false;    //снова показываем список моделей
+                $scope.tryUpdateList = false;           //пытались обновить наличия товара или нет
+                $scope.tryUpdateComingTable = false;    //пытались обновить таблицу поступления или нет               
             }
         }
 
@@ -63,12 +78,15 @@ angular.module('app.newProducts', ['ngRoute'])
             $scope.updateLoading = true;
             $scope.tryUpdateList = true; //пытались обновить наличия товара
 
-            for (var i = 0; i < $scope.modelList.length; i++) {
-                if ($scope.modelList[i].rowType != 'title' && $scope.modelList[i].rowType != 'sub-title') {
-                    $scope.modelList[i].count = $scope.modelList[i].count + $scope.modelList[i].newCount;
-                    $scope.modelList[i].newCount = 0;
-                }                
-            }
+            if ($scope.tryUpdateList) { //если пытаемся первый раз
+                //считаем новые значения, которые будем заносить в наличие
+                for (var i = 0; i < $scope.modelList.length; i++) {
+                    if ($scope.modelList[i].rowType != 'title' && $scope.modelList[i].rowType != 'sub-title') {
+                        $scope.modelList[i].count = $scope.modelList[i].count + $scope.modelList[i].newCount;
+                        $scope.modelList[i].newCount = 0;
+                    }                
+                }
+            }            
 
             $http({
                 method: 'POST',
@@ -76,12 +94,10 @@ angular.module('app.newProducts', ['ngRoute'])
                 data: JSON.stringify($scope.modelList),
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
             }).success(function (data, status) {
-                alert('Операция выполнена успешно');
                 $scope.errorUpdateList = false;         //ошибки нет
                 $scope.updateLoading = false;           //стоп лоадинг
                 updateComingTable();                    //запись информации о поступлении в таблицу постепления                   
             }).error(function () {
-                alert('Ошибка! Изменения не сохранены! =(');
                 $scope.errorUpdateList = true;         //ошибка есть
                 $scope.updateLoading = false;
             });            
@@ -95,7 +111,7 @@ angular.module('app.newProducts', ['ngRoute'])
             $http({
                 method: 'POST',
                 url: "https://script.google.com/macros/s/AKfycbxYVeEnuGLQM-QxXeWF3emj_9JlpsZ5S_2g_uWWQ6snh0RHUrJD/exec",
-                data: JSON.stringify($scope.saleModel),
+                data: JSON.stringify($scope.comingModel),
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
             }).success(function (data, status) {
                 $scope.updateComingTableLoading = false;
